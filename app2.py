@@ -32,10 +32,15 @@ def load_ner_model():
 # ------------------------------
 def transcribe_audio(uploaded_file, model):
     """
-    Transcribes the audio file to a text using Whisper Model.
+    Transcribes the audio file to a text using Whisper Model after processing it with FFmpeg.
     """
-    audio = uploaded_file.read()
-    transcription = model(audio, return_timestamps=True)
+    # FFmpeg 
+    output = ffmpeg.input(uploaded_file).output('pipe:1').run(capture_stdout=True, capture_stderr=True)
+    
+    audio_data = output[0]  
+
+    transcription = model(audio_data, return_timestamps=True)
+    
     return transcription["text"]
 
 # ------------------------------
