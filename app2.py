@@ -2,6 +2,8 @@ import streamlit as st
 from transformers import pipeline
 import os
 import ffmpeg
+import tempfile
+
 
 
 # Hi Teacher, I had to add this "ffmpeg" path, I could not find another way.
@@ -32,15 +34,23 @@ def load_ner_model():
 # ------------------------------
 def transcribe_audio(uploaded_file, model):
     """
-    Transcribes the audio file to a text using Whisper Model after processing it with FFmpeg.
+    Transcribes the audio file to a text using Whisper Model.
     """
-    # FFmpeg 
-    output = ffmpeg.input(uploaded_file).output('pipe:1').run(capture_stdout=True, capture_stderr=True)
-    
-    audio_data = output[0]  
+    # Geçici bir dosya oluştur
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        temp_file.write(uploaded_file.read())
+        temp_filename = temp_file.name
 
+    # FFmpeg ile dosyayı işleme
+    try:
+        output = ffmpeg.input(temp_filename).output('pipe:1').run(capture_stdout=True, capture_stderr=True)
+        audio_data = output[0]
+    except ffmpeg.Error as e:
+        print(f"FFmpeg error: {e.stderr.decode()}")
+        return None
+
+    # Whisper modeline ses verisini gönderme
     transcription = model(audio_data, return_timestamps=True)
-    
     return transcription["text"]
 
 # ------------------------------
