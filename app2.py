@@ -1,6 +1,7 @@
 import streamlit as st
 from transformers import pipeline
 import os
+import ffmpeg
 
 
 # Hi Teacher, I had to add this "ffmpeg" path, I could not find another way.
