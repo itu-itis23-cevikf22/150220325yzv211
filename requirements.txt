@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 streamlit
 transformers
 torch
 numpy
 ffmpeg
+=======
+streamlit
+transformers
+torch
+numpy
+ffmpeg
+>>>>>>> 7864d6580439dfba3552632ef10e592e887c6e30
